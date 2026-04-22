@@ -9,7 +9,7 @@ It is especially handy with `VSCodeVim`, but it works fine without Vim too.
 - Quick-pick definitions for the symbol under the cursor
 - Quick-pick implementations for the symbol under the cursor
 - Quick-pick references for the symbol under the cursor
-- Quick Search for the current word under the cursor across the workspace
+- Quick-pick workspace search for the current word under the cursor, without leaving persistent search highlights
 - Works nicely with leader-based keybindings in `VSCodeVim`
 
 ## Commands

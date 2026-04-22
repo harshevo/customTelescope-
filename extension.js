@@ -54,7 +54,44 @@ async function openCurrentWordInWorkspaceSearch() {
     return;
   }
 
-  await vscode.commands.executeCommand("workbench.action.quickOpen", `%${word}`);
+  const items = [];
+  await vscode.workspace.findTextInFiles(
+    {
+      pattern: word,
+      isRegExp: false,
+      isCaseSensitive: false,
+      isWordMatch: true
+    },
+    {
+      useIgnoreFiles: true,
+      useGlobalIgnoreFiles: true,
+      followSymlinks: true,
+      maxResults: 500
+    },
+    (result) => {
+      for (const match of normalizeTextSearchResult(result)) {
+        items.push(match);
+      }
+    }
+  );
+
+  if (items.length === 0) {
+    await vscode.window.showInformationMessage(`No workspace matches found for "${word}".`);
+    return;
+  }
+
+  const picked = await vscode.window.showQuickPick(items, {
+    matchOnDescription: true,
+    matchOnDetail: true,
+    title: `Workspace Matches: ${word}`,
+    placeHolder: "Select a match"
+  });
+
+  if (!picked) {
+    return;
+  }
+
+  await openLocation(picked.location);
 }
 
 async function openLocationPicker(options) {
@@ -153,6 +190,40 @@ function dedupeLocations(locations) {
   }
 
   return result;
+}
+
+function normalizeTextSearchResult(result) {
+  const ranges = Array.isArray(result.ranges) ? result.ranges : [result.ranges];
+  const previewMatches = Array.isArray(result.preview.matches)
+    ? result.preview.matches
+    : [result.preview.matches];
+  const relativePath = vscode.workspace.asRelativePath(result.uri, false);
+  const basename = path.basename(result.uri.fsPath || result.uri.path);
+  const items = [];
+
+  for (let index = 0; index < ranges.length; index += 1) {
+    const range = ranges[index];
+    const previewMatch = previewMatches[index] || previewMatches[0];
+    const line = range.start.line + 1;
+    const column = range.start.character + 1;
+    let detail = result.preview.text.trim();
+
+    if (previewMatch) {
+      detail = result.preview.text.slice(0).trim();
+    }
+
+    items.push({
+      label: basename,
+      description: `${relativePath}:${line}:${column}`,
+      detail,
+      location: {
+        uri: result.uri,
+        range
+      }
+    });
+  }
+
+  return items;
 }
 
 async function buildPreview(uri, lineNumber) {

@@ -6,4 +6,4 @@
 - Added quick-pick definitions under cursor
 - Added quick-pick implementations under cursor
 - Added quick-pick references under cursor
-- Added quick search for current word under cursor across the workspace
+- Added workspace quick-pick search for current word under cursor without persistent search highlights
