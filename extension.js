@@ -31,8 +31,84 @@ function activate(context) {
     }),
     vscode.commands.registerCommand("customTelescope.findWordInWorkspace", async () => {
       await openCurrentWordInWorkspaceSearch();
+    }),
+    vscode.commands.registerCommand("customTelescope.findInCurrentFile", async () => {
+      await openCurrentFilePicker();
     })
   );
+}
+
+async function openCurrentFilePicker() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    await vscode.window.showWarningMessage("Open a file first.");
+    return;
+  }
+
+  const document = editor.document;
+  const items = [];
+  const lineCount = document.lineCount;
+  const padWidth = String(lineCount).length;
+
+  for (let lineNumber = 0; lineNumber < lineCount; lineNumber += 1) {
+    const lineText = document.lineAt(lineNumber).text;
+    if (lineText.trim().length === 0) {
+      continue;
+    }
+
+    items.push({
+      label: `${String(lineNumber + 1).padStart(padWidth, " ")}  ${lineText}`,
+      lineNumber
+    });
+  }
+
+  if (items.length === 0) {
+    await vscode.window.showInformationMessage("No non-empty lines in this file.");
+    return;
+  }
+
+  const basename = path.basename(document.uri.fsPath || document.uri.path);
+  const startSelection = editor.selection;
+  const startVisible = editor.visibleRanges[0];
+
+  const picker = vscode.window.createQuickPick();
+  picker.items = items;
+  picker.title = `Find in ${basename}`;
+  picker.placeholder = "Type to filter lines";
+  picker.matchOnDescription = false;
+  picker.matchOnDetail = false;
+
+  picker.onDidChangeActive((active) => {
+    const item = active[0];
+    if (!item) {
+      return;
+    }
+    const range = new vscode.Range(item.lineNumber, 0, item.lineNumber, 0);
+    editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+  });
+
+  picker.onDidAccept(() => {
+    const item = picker.activeItems[0];
+    picker.hide();
+    if (!item) {
+      return;
+    }
+    const position = new vscode.Position(item.lineNumber, 0);
+    editor.selection = new vscode.Selection(position, position);
+    editor.revealRange(new vscode.Range(position, position), vscode.TextEditorRevealType.InCenter);
+  });
+
+  picker.onDidHide(() => {
+    if (!picker.selectedItems[0]) {
+      editor.selection = startSelection;
+      if (startVisible) {
+        editor.revealRange(startVisible, vscode.TextEditorRevealType.Default);
+      }
+    }
+    picker.dispose();
+  });
+
+  picker.show();
 }
 
 async function openCurrentWordInWorkspaceSearch() {

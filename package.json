@@ -36,7 +36,8 @@
     "onCommand:customTelescope.findDefinitions",
     "onCommand:customTelescope.findImplementations",
     "onCommand:customTelescope.findReferences",
-    "onCommand:customTelescope.findWordInWorkspace"
+    "onCommand:customTelescope.findWordInWorkspace",
+    "onCommand:customTelescope.findInCurrentFile"
   ],
   "main": "./extension.js",
   "scripts": {
@@ -59,6 +60,10 @@
       {
         "command": "customTelescope.findWordInWorkspace",
         "title": "CustomTelescope: Find Current Word In Workspace"
+      },
+      {
+        "command": "customTelescope.findInCurrentFile",
+        "title": "CustomTelescope: Find In Current File"
       }
     ]
   }
