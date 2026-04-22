@@ -9,6 +9,7 @@ It is especially handy with `VSCodeVim`, but it works fine without Vim too.
 - Quick-pick definitions for the symbol under the cursor
 - Quick-pick implementations for the symbol under the cursor
 - Quick-pick references for the symbol under the cursor
+- Quick Search for the current word under the cursor across the workspace
 - Works nicely with leader-based keybindings in `VSCodeVim`
 
 ## Commands
@@ -16,6 +17,7 @@ It is especially handy with `VSCodeVim`, but it works fine without Vim too.
 - `CustomTelescope: Find Definitions`
 - `CustomTelescope: Find Implementations`
 - `CustomTelescope: Find References`
+- `CustomTelescope: Find Current Word In Workspace`
 
 ## Installation
 
@@ -51,6 +53,7 @@ npx @vscode/vsce package
    - find definitions
    - find implementations
    - find references
+   - find current word in workspace
 4. Pick a result from the quick-pick list.
 5. Press `Enter` to open it.
 
@@ -73,6 +76,10 @@ Add this to your VS Code `settings.json`:
     {
       "before": ["<leader>", "f", "r"],
       "commands": ["customTelescope.findReferences"]
+    },
+    {
+      "before": ["<leader>", "f", "w"],
+      "commands": ["customTelescope.findWordInWorkspace"]
     }
   ]
 }

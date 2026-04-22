@@ -28,8 +28,33 @@ function activate(context) {
         pickerTitle: "References",
         pickerPlaceholder: "Select a reference"
       });
+    }),
+    vscode.commands.registerCommand("customTelescope.findWordInWorkspace", async () => {
+      await openCurrentWordInWorkspaceSearch();
     })
   );
+}
+
+async function openCurrentWordInWorkspaceSearch() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    await vscode.window.showWarningMessage("Open a file and place the cursor on a word first.");
+    return;
+  }
+
+  const wordRange = editor.document.getWordRangeAtPosition(editor.selection.active);
+  if (!wordRange) {
+    await vscode.window.showInformationMessage("No word found under the cursor.");
+    return;
+  }
+
+  const word = editor.document.getText(wordRange);
+  if (!word) {
+    await vscode.window.showInformationMessage("No word found under the cursor.");
+    return;
+  }
+
+  await vscode.commands.executeCommand("workbench.action.quickOpen", `%${word}`);
 }
 
 async function openLocationPicker(options) {

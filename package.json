@@ -35,7 +35,8 @@
   "activationEvents": [
     "onCommand:customTelescope.findDefinitions",
     "onCommand:customTelescope.findImplementations",
-    "onCommand:customTelescope.findReferences"
+    "onCommand:customTelescope.findReferences",
+    "onCommand:customTelescope.findWordInWorkspace"
   ],
   "main": "./extension.js",
   "scripts": {
@@ -54,6 +55,10 @@
       {
         "command": "customTelescope.findReferences",
         "title": "CustomTelescope: Find References"
+      },
+      {
+        "command": "customTelescope.findWordInWorkspace",
+        "title": "CustomTelescope: Find Current Word In Workspace"
       }
     ]
   }
