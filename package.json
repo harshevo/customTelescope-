@@ -1,0 +1,60 @@
+{
+  "name": "customtelescope",
+  "displayName": "CustomTelescope",
+  "description": "Telescope-style quick-pick navigation for definitions, implementations, references, and workspace text search in VS Code.",
+  "version": "0.0.1",
+  "publisher": "harshevo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:harshevo/customTelescope-.git"
+  },
+  "homepage": "https://github.com/harshevo/customTelescope-#readme",
+  "bugs": {
+    "url": "https://github.com/harshevo/customTelescope-/issues"
+  },
+  "engines": {
+    "vscode": "^1.89.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "telescope",
+    "vim",
+    "navigation",
+    "references",
+    "definitions",
+    "implementations",
+    "quickpick"
+  ],
+  "galleryBanner": {
+    "color": "#1d232a",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onCommand:customTelescope.findDefinitions",
+    "onCommand:customTelescope.findImplementations",
+    "onCommand:customTelescope.findReferences"
+  ],
+  "main": "./extension.js",
+  "scripts": {
+    "check": "node --check extension.js"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "customTelescope.findDefinitions",
+        "title": "CustomTelescope: Find Definitions"
+      },
+      {
+        "command": "customTelescope.findImplementations",
+        "title": "CustomTelescope: Find Implementations"
+      },
+      {
+        "command": "customTelescope.findReferences",
+        "title": "CustomTelescope: Find References"
+      }
+    ]
+  }
+}
